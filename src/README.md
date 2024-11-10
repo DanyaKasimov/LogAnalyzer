@@ -23,9 +23,9 @@
   <br>
   Пример:
 
-      --path logs/2023/app.log   (Будет прочитан один конкретный файл)
+      --path logs/2023/app.txt   (Будет прочитан один конкретный файл)
       --path logs/2023/*         (Будут прочитаны все файлы, находящиеся по пути "logs/2023")
-      --path logs/**/access.log  (Будyт прочитаны все файлы, имеющие название "access.log")
+      --path logs/**/access.txt  (Будyт прочитаны все файлы, имеющие название "access.log")
 
 ### Временные промежутки (--from / --to)
 
@@ -74,7 +74,7 @@
     java
     LogAnalyzer
     --path
-    logs/**/access.log
+    logs/**/access.txt
     --from
     2015-05-17T00:00:00+00:00
     --to

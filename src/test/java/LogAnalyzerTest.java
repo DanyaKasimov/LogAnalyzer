@@ -29,7 +29,7 @@ public class LogAnalyzerTest {
     @Test
     public void testLoadLogsFromFile_LogsDoubleStar() {
         Arguments arguments = new Arguments();
-        arguments.path("logs/test/**/test.log");
+        arguments.path("logs/test/**/test.txt");
         LogStatistics stats = analyzer.loadLogsFromFile(arguments);
 
         List<String> filesNames = stats.filesNames();
@@ -49,21 +49,21 @@ public class LogAnalyzerTest {
 
         List<String> filesNames = stats.filesNames();
         assertEquals(2, filesNames.size());
-        assertEquals("test_2.log", filesNames.get(0));
-        assertEquals("test.log", filesNames.get(1));
+        assertEquals("test_2.txt", filesNames.get(0));
+        assertEquals("test.txt", filesNames.get(1));
         assertEquals(23L, stats.totalRequests());
     }
 
     @Test
     public void testLoadLogsFromFile_FullPath() {
         Arguments arguments = new Arguments();
-        arguments.path("logs/test/2023/test.log");
+        arguments.path("logs/test/2023/test.txt");
 
         LogStatistics stats = analyzer.loadLogsFromFile(arguments);
 
         List<String> filesNames = stats.filesNames();
         assertEquals(1, filesNames.size());
-        assertEquals("test.log", filesNames.get(0));
+        assertEquals("test.txt", filesNames.get(0));
 
         assertEquals(12L, stats.totalRequests());
     }
