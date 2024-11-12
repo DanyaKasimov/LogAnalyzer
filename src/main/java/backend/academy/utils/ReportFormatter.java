@@ -23,6 +23,9 @@ public class ReportFormatter {
     private static final String LINE = "|------------------------------------------|--------------|\n";
 
     public static String format(LogStatistics stats, Arguments arguments) {
+        if (arguments.format() == null) {
+            return formatMarkdown(stats, arguments);
+        }
         return switch (arguments.format().toUpperCase()) {
             case Config.MARKDOWN -> formatMarkdown(stats, arguments);
             case Config.ADOC -> formatADoc(stats, arguments);
