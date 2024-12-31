@@ -1,137 +1,89 @@
-# Шаблон Java-проекта для домашних заданий
+# Анализатор лог-файлов
 
-Шаблон для домашних заданий [Академии Бэкенда 2024][course-url].
+### Путь (--path)
 
-Цель данного репозитория – познакомить вас с процессом разработки приложений на
-Java с использованием наиболее распространенных практик, инструментов и
-библиотек.
+* URL
 
-## Структура проекта
+  Программа поддерживает ввод как одного url, так и нескольких, используя символ "|" для разграничения.
+  <br>
+  <br>
+  Пример:
 
-Это типовой Java-проект, который собирается с помощью инструмента автоматической
-сборки проектов [Apache Maven](https://maven.apache.org/).
+      --path https://logs/2024/nginx_logs
+      --path https://logs/2024/nginx_logs|https://logs/2023/nginx_logs
 
-Проект состоит из следующих директорий и файлов:
+  P.S. В качестве теста использовался URL:
+  https://raw.githubusercontent.com/elastic/examples/master/Common%20Data%20Formats/nginx_logs/nginx_logs
+  <br>
+  <br>
+* File
 
-- [pom.xml](./pom.xml) – дескриптор сборки, используемый maven, или Project
-  Object Model. В нем описаны зависимости проекта и шаги по его сборке
-- [src/](./src) – директория, которая содержит исходный код приложения и его
-  тесты:
-  - [src/main/](./src/main) – здесь находится код вашего приложения
-  - [src/test/](./src/test) – здесь находятся тесты вашего приложения
-- [mvnw](./mvnw) и [mvnw.cmd](./mvnw.cmd) – скрипты maven wrapper для Unix и
-  Windows, которые позволяют запускать команды maven без локальной установки
-- [checkstyle.xml](checkstyle.xml),
-  [checkstyle-suppression.xml](checkstyle-suppression.xml), [pmd.xml](pmd.xml) и
-  [spotbugs-excludes.xml](spotbugs-excludes.xml) – в проекте используются
-  [линтеры](https://en.wikipedia.org/wiki/Lint_%28software%29) для контроля
-  качества кода. Указанные файлы содержат правила для используемых линтеров
-- [.mvn/](./.mvn) – служебная директория maven, содержащая конфигурационные
-  параметры сборщика
-- [lombok.config](lombok.config) – конфигурационный файл
-  [Lombok](https://projectlombok.org/), библиотеки помогающей избежать рутинного
-  написания шаблонного кода
-- [.editorconfig](.editorconfig) – файл с описанием настроек форматирования кода
-- [.github/workflows/build.yml](.github/workflows/build.yml) – файл с описанием
-  шагов сборки проекта в среде Github
-- [.gitattributes](.gitattributes), [.gitignore](.gitignore) – служебные файлы
-  для git, с описанием того, как обрабатывать различные файлы, и какие из них
-  игнорировать
+  Программа поддерживает несколько форматов ввода пути.
+  <br>
+  <br>
+  Пример:
 
-## Начало работы
+      --path logs/2023/app.txt   (Будет прочитан один конкретный файл)
+      --path logs/2023/*         (Будут прочитаны все файлы, находящиеся по пути "logs/2023")
+      --path logs/**/access.txt  (Будyт прочитаны все файлы, имеющие название "access.txt")
 
-Подробнее о том, как приступить к разработке, описано в разделах
-[курса][course-url] `1.8 Настройка IDE`, `1.9 Работа с Git` и
-`1.10 Настройка SSH`.
+### Временные промежутки (--from / --to)
 
-Для того чтобы собрать проект, и проверить, что все работает корректно, можно
-запустить из модального окна IDEA
-[Run Anything](https://www.jetbrains.com/help/idea/running-anything.html)
-команду:
+Программа поддерживает ввод даты начала (--from) и даты конца (--to) в формате ISO8601.
+<br>
+<br>
+Пример:
 
-```shell
-mvn clean verify
-```
+      --from 2015-05-17T00:00:00+00:00
+      --to 2015-05-17T23:59:59+00:00
 
-Альтернативно можно в терминале из корня проекта выполнить следующие команды.
+### Формат вывода (--format)
 
-Для Unix (Linux, macOS, Cygwin, WSL):
+Программа поддерживает два формата вывода:
 
-```shell
-./mvnw clean verify
-```
+* Markdown
+* Adoc
 
-Для Windows:
+Пример:
 
-```shell
-mvnw.cmd clean verify
-```
+    --format markdown
+    --format adoc
 
-Для окончания сборки потребуется подождать какое-то время, пока maven скачает
-все необходимые зависимости, скомпилирует проект и прогонит базовый набор
-тестов.
+### Фильтрация (--filter-field / --filter-value)
 
-Если вы в процессе сборки получили ошибку:
+Программа поддерживает фильтрацию по 3 полям:
 
-```shell
-Rule 0: org.apache.maven.enforcer.rules.version.RequireJavaVersion failed with message:
-JDK version must be at least 22
-```
+* agent
+* method (С этим полем поддерживает сортировка по возрастанию и убыванию (asc/desc))
+* status
 
-Значит, версия вашего JDK ниже 22.
+Пример:
 
-Если же получили ошибку:
+    --filter-field agent --filter-value "Mozilla"
+    --filter-field method --filter-value "GET" --order asc 
 
-```shell
-Rule 1: org.apache.maven.enforcer.rules.version.RequireMavenVersion failed with message:
-Maven version should, at least, be 3.8.8
-```
+### Дополнительные характеристики
 
-Значит, у вас используется версия maven ниже 3.8.8. Такого не должно произойти,
-если вы запускаете сборку из IDEA или через `mvnw`-скрипты.
+Реализованы две дополнительные характеристики:
 
-Далее будут перечислены другие полезные команды maven.
+* Топ-15 дней по количеству запросов
+* Топ-15 IP-адресов по количеству запросов
 
-Запуск только компиляции основных классов:
+### Полный пример запуска программы
 
-```shell
-mvn compile
-```
-
-Запуск тестов:
-
-```shell
-mvn test
-```
-
-Запуск линтеров:
-
-```shell
-mvn checkstyle:check modernizer:modernizer spotbugs:check pmd:check pmd:cpd-check
-```
-
-Вывод дерева зависимостей проекта (полезно при отладке транзитивных
-зависимостей):
-
-```shell
-mvn dependency:tree
-```
-
-Вывод вспомогательной информации о любом плагине (вместо `compiler` можно
-подставить интересующий вас плагин):
-
-```shell
-mvn help:describe -Dplugin=compiler
-```
-
-## Дополнительные материалы
-
-- Документация по maven: https://maven.apache.org/guides/index.html
-- Поиск зависимостей и их версий: https://central.sonatype.com/search
-- Документация по процессу автоматизированной сборки в среде github:
-  https://docs.github.com/en/actions
-- Документация по git: https://git-scm.com/doc
-- Javadoc для Java 22:
-  https://docs.oracle.com/en/java/javase/22/docs/api/index.html
-
-[course-url]: https://edu.tinkoff.ru/all-activities/courses/870efa9d-7067-4713-97ae-7db256b73eab
+    java
+    LogAnalyzer
+    --path
+    logs/**/access.txt
+    --from
+    2015-05-17T00:00:00+00:00
+    --to
+    2015-05-17T23:59:59+00:00
+    --format
+    markdown
+    --filter-field
+    method
+    --filter-value
+    "GET"
+    --order
+    desc
